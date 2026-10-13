@@ -34,7 +34,7 @@ def backtest(predictions, returns, initial_balance=10000.0, fee_bps=10.0,
         if new_cash <= 0:
             raise ValueError("Fees exhausted equity; reduce fee rate or exposure")
         fees.append(entry_fee + exit_fee)
-        turnovers.append(turnover + (abs(drifted_weight) if exit_fee else 0.0))
+        turnovers.append(turnover + (abs(drifted_weight) if i == len(returns) - 1 else 0.0))
         net_returns.append(new_cash / cash - 1)
         equity.append(new_cash)
         cash = new_cash

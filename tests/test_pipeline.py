@@ -9,6 +9,10 @@ from src.datasets import demo_prices, features, load_prices
 from src.main import main, run
 
 class BacktestTests(unittest.TestCase):
+    def test_zero_fee_liquidation_still_has_turnover(self):
+        r = backtest([1], [0], fee_bps=0, max_position=1)
+        self.assertEqual(r['turnover'], [2.0])
+
     def test_one_day_entry_and_liquidation_fees(self):
         r = backtest([1], [.1], initial_balance=100, fee_bps=100, max_position=1)
         self.assertAlmostEqual(r['equity'][0], 100 * .99 * 1.1 * .99)
