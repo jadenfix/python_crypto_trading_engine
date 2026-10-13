@@ -13,6 +13,14 @@ from .models import train
 
 def run(csv_path, output, model_type="ridge", initial_balance=10000.0,
         fee_bps=10.0, threshold=0.001, max_position=0.5, shorting=False):
+    csv_path = Path(csv_path)
+    output = Path(output)
+    source_path = csv_path.resolve()
+    for name in ("backtest_results.csv", "performance.json", "backtest_plot.png"):
+        target = output / name
+        if (target.resolve() == source_path or
+                (target.exists() and csv_path.exists() and target.samefile(csv_path))):
+            raise ValueError(f"Report {name} would overwrite the input CSV; choose another output directory")
     dates, prices = load_prices(csv_path)
     x, y, indices = features(prices)
     split = int(len(x) * 0.7)
@@ -23,7 +31,6 @@ def run(csv_path, output, model_type="ridge", initial_balance=10000.0,
                       max_position, shorting)
     baseline = backtest(np.ones(len(predictions)), y[split:], initial_balance,
                         fee_bps, threshold=0, max_position=max_position)
-    output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     rows = zip(dates[indices[split:]], dates[indices[split:] + 1], predictions,
                y[split:], result["positions"], result["turnover"], result["fees"],

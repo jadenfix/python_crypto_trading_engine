@@ -73,6 +73,12 @@ Tests exercise chronological feature isolation, next-day target alignment,
 invalid input, entry/exit costs, drift rebalance, drawdown, short opt-in, and the
 complete deterministic CSV → model → backtest → JSON/CSV/PNG workflow.
 
+The input CSV is preserved. If it is also a report destination
+(`backtest_results.csv`, `performance.json`, or `backtest_plot.png`), including
+an alias to the same file, the pipeline rejects the run before training or
+writing reports. Choose another `--output` directory. A noncolliding input
+such as `prices.csv` can remain in the report directory.
+
 ## Source
 
 | File | Purpose |
@@ -82,6 +88,7 @@ complete deterministic CSV → model → backtest → JSON/CSV/PNG workflow.
 | `src/backtest.py` | Position, fee, equity and performance accounting |
 | `src/main.py` | CLI and complete pipeline |
 | `tests/test_pipeline.py` | Accounting and end-to-end regression checks |
+| `tests/test_input_preservation.py` | Source-file collision and CLI preservation checks |
 
 The repository previously contained only a README describing unavailable
 scripts. This implementation supports the documented commands above; optional
